@@ -1,22 +1,24 @@
 {
-  "name": "ts-node-hello",
+  "name": "hydrant",
   "version": "0.0.1",
-  "description": "A simple typescript node hello world",
+  "description": "A typescript firebase app",
   "author": "Aaron Sykes <aaron@aaronsykes.com>",
   "license": "MIT",
-  "main": "hello.ts",
+  "main": "server.ts",
   "scripts": {
     "start": "npx ts-node src/server.ts",
     "test": "npx ts-mocha test/test.ts"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/asyks/ts-node-hello.git"
+    "url": "https://github.com/asyks/hydrant.git"
   },
   "dependencies": {
     "@types/node": "13.1.8",
+    "@types/express": "4.17.2",
     "typescript": "3.5.3",
-    "ts-node": "8.6.2"
+    "ts-node": "8.6.2",
+    "express": "4.17.1"
   },
   "devDependencies": {
     "@types/mocha": "5.2.7",

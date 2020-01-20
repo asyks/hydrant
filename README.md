@@ -1,21 +1,21 @@
-# typescript node hello world
+# hydrant
 
-A simple nodejs hello world implementation in typescript
+A firebase app in node, express, and typescript
 
 ## Running
 
 ```
-> docker build -t ts-node-hello .
+> docker build -t hydrant .
 ...
-> docker run --network="host" ts-node-hello start
+> docker run --network="host" hydrant start
 ...
 ```
 Example with custom port:
 ```
-> docker run --network="host" ts-node-hello start port=3001
+> docker run --network="host" hydrant start port=3001
 ```
 
 ## Testing
 ```
-> docker run ts-node-hello test
+> docker run hydrant test
 ```
