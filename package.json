@@ -1,0 +1,26 @@
+{
+  "name": "ts-node-hello",
+  "version": "0.0.1",
+  "description": "A simple typescript node hello world",
+  "author": "Aaron Sykes <aaron@aaronsykes.com>",
+  "license": "MIT",
+  "main": "hello.ts",
+  "scripts": {
+    "start": "npx ts-node src/server.ts",
+    "test": "npx ts-mocha test/test.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/asyks/ts-node-hello.git"
+  },
+  "dependencies": {
+    "@types/node": "13.1.8",
+    "typescript": "3.5.3",
+    "ts-node": "8.6.2"
+  },
+  "devDependencies": {
+    "@types/mocha": "5.2.7",
+    "mocha": "7.0.0",
+    "ts-mocha": "6.0.0"
+  }
+}
