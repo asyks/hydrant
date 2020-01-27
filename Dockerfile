@@ -8,7 +8,7 @@ WORKDIR /opt/hydrant
 COPY package.json package.json
 COPY package-lock.json package-lock.json
 
-RUN npm install --no-optional
+RUN npm install --no-optional --save
 
 FROM node:11.14.0-alpine
 
@@ -23,5 +23,4 @@ COPY package-lock.json package-lock.json
 
 COPY src /opt/hydrant/src
 COPY test /opt/hydrant/test
-
-ENTRYPOINT [ "npm" ]
+COPY firebase.json /opt/hydrant

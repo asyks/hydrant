@@ -1,0 +1,13 @@
+version: "2"
+services:
+    hydrant-node:
+        build: .
+        environment:
+            PORT: 8080
+        command: npm start
+        ports:
+            - 8080:8080
+    hydrant-redis:
+        image: redis:5.0.7-alpine
+        ports:
+            - 6379:6379
