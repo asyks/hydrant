@@ -23,4 +23,3 @@ COPY package-lock.json package-lock.json
 
 COPY src /opt/hydrant/src
 COPY test /opt/hydrant/test
-COPY firebase.json /opt/hydrant

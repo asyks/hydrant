@@ -4,9 +4,12 @@ services:
         build: .
         environment:
             PORT: 8080
+            REDIS_URL: redis://hydrant-redis:6379/
         command: npm start
         ports:
             - 8080:8080
+        depends_on:
+            - hydrant-redis
     hydrant-redis:
         image: redis:5.0.7-alpine
         ports:
