@@ -6,27 +6,13 @@ import * as constants from "./constants"
 
 
 const app = express();
-const port: number = Number(process.env.PORT);
 
-const redis_url: string = String(process.env.REDIS_URL);
-const rclient = redis.createClient({url: redis_url});
+app.get("/", routes.index)
 
-rclient.on("error", function (err) {
-  console.log("Error " + err);
-});
+app.get("/set", routes.cache_set)
 
-app.get("/", routes.index);
+app.get("/get", routes.cache_get)
 
-app.get("/create", (req, res) => {
-  rclient.set("foo", "bar", redis.print);
-  res.end("Set key 'foo'");
+app.listen(constants.port, () => {
+  console.log(`Server running at http://${constants.hostname}:${constants.port}/`);
 })
-
-app.get("/retrieve", (req, res) => {
-  rclient.get("foo");
-  res.end("Got key 'foo'");
-})
-
-app.listen(port, () => {
-  console.log(`Server running at http://${constants.hostname}:${port}/`);
-});
