@@ -1,4 +1,4 @@
-import * as http from "http"
+import * as express from "express";
 import * as redis from "redis";
 
 import * as constants from "./constants"
@@ -11,39 +11,46 @@ rclient.on("connect", function (): void {
 })
 
 rclient.on("error", function (err): void {
-  console.log("ERROR " + err);
+  console.log(`ERROR ${err}`);
 })
 
-function send_ok_response(res: http.ServerResponse, msg: string): void {
+function send_ok_text_response(res: express.Response, msg: string): void {
   res.statusCode = 200;
   res.setHeader("Content-Type", "text/plain");
   res.end(msg);
 }
 
-export function index(req: http.IncomingMessage, res: http.ServerResponse): void {
-  send_ok_response(res, "Hydrant is running...");
+function send_ok_json_response(res: express.Response, data: object): void {
+  res.json(data)
 }
 
-export function cache_set(req: http.IncomingMessage, res: http.ServerResponse): void {
-  rclient.set("foo", "bar", function (err, ret) {
+export function index(req: express.Request, res: express.Response): void {
+  send_ok_text_response(res, "Hydrant is running...");
+}
+
+export function cache_set(req: express.Request, res: express.Response): void {
+  let key: number | string = req.body.key;
+  let val: number | string = req.body.value;
+
+  rclient.set(key, val, function (err, ret) {
     if (err) {
-      console.log("ERROR during `set` " + err);
+      console.log(`ERROR during 'set': ${err}`);
     } else {
-      let msg: string = "set: " + ret;
-      console.log(msg);
-      send_ok_response(res, msg)
+      console.log(`set -> ${key}: ${val} | ${ret}`);
+      send_ok_json_response(res, {status: "OK", stored: {key: key, value: val}})
     }
   })
 }
 
-export function cache_get(req: http.IncomingMessage, res: http.ServerResponse): void {
-  rclient.get("foo", function (err, ret) {
+export function cache_get(req: express.Request, res: express.Response): void {
+  let key: number | string = req.params.key;
+
+  rclient.get(key, function (err, ret) {
     if (err) {
-      console.log("ERROR during `get` " + err);
+      console.log(`ERROR during 'get': ${err}`);
     } else {
-      let msg: string = "get: " + ret;
-      console.log(msg);
-      send_ok_response(res, msg)
+      console.log(`get <- ${key}: ${ret}`);
+      send_ok_json_response(res, {status: "OK", found: {key: key, value: ret}})
     }
   })
 }
