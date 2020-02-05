@@ -4,7 +4,7 @@ import * as redis from "redis";
 import * as constants from "./constants"
 
 
-const rclient = redis.createClient({url: constants.redis_url});
+const rclient: redis.RedisClient = redis.createClient({url: constants.redis_url});
 
 rclient.on("connect", function (): void {
   console.log("Connected to Redis");
@@ -29,8 +29,8 @@ export function index(req: express.Request, res: express.Response): void {
 }
 
 export function cache_set(req: express.Request, res: express.Response): void {
-  let key: number | string = req.body.key;
-  let val: number | string = req.body.value;
+  let key: string = req.body.key;
+  let val: string = req.body.value;
 
   rclient.set(key, val, function (err, ret) {
     if (err) {
@@ -43,7 +43,7 @@ export function cache_set(req: express.Request, res: express.Response): void {
 }
 
 export function cache_get(req: express.Request, res: express.Response): void {
-  let key: number | string = req.params.key;
+  let key: string = req.params.key;
 
   rclient.get(key, function (err, ret) {
     if (err) {
