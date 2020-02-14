@@ -1,6 +1,6 @@
 # hydrant
 
-A firebase app in node, express, and typescript
+A bare-bones redis http frontend app in typescript node/express
 
 ## Running
 
