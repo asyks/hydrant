@@ -4,14 +4,14 @@ import * as redis from "redis";
 import * as constants from "./constants"
 
 
-const rclient: redis.RedisClient = redis.createClient({url: constants.redis_url});
+export const rclient: redis.RedisClient = redis.createClient({url: constants.redis_url});
 
 rclient.on("connect", function (): void {
-  console.log("Connected to Redis");
+  console.info("Connected to Redis");
 })
 
 rclient.on("error", function (err): void {
-  console.log(`ERROR ${err}`);
+  console.warn(`ERROR ${err}`);
 })
 
 function send_ok_text_response(res: express.Response, msg: string): void {
@@ -21,7 +21,7 @@ function send_ok_text_response(res: express.Response, msg: string): void {
 }
 
 function send_ok_json_response(res: express.Response, data: object): void {
-  res.json(data)
+  res.json(data);
 }
 
 export function index(req: express.Request, res: express.Response): void {
@@ -34,9 +34,9 @@ export function cache_set(req: express.Request, res: express.Response): void {
 
   rclient.set(key, val, function (err, ret) {
     if (err) {
-      console.log(`ERROR during 'set': ${err}`);
+      console.warn(`ERROR during 'set': ${err}`);
     } else {
-      console.log(`set -> ${key}: ${val} | ${ret}`);
+      console.info(`set -> ${key}: ${val} | ${ret}`);
       send_ok_json_response(res, {status: "OK", stored: {key: key, value: val}})
     }
   })
@@ -47,9 +47,9 @@ export function cache_get(req: express.Request, res: express.Response): void {
 
   rclient.get(key, function (err, ret) {
     if (err) {
-      console.log(`ERROR during 'get': ${err}`);
+      console.warn(`ERROR during 'get': ${err}`);
     } else {
-      console.log(`get <- ${key}: ${ret}`);
+      console.info(`get <- ${key}: ${ret}`);
       send_ok_json_response(res, {status: "OK", found: {key: key, value: ret}})
     }
   })

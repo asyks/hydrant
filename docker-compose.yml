@@ -5,6 +5,7 @@ services:
         environment:
             PORT: 8080
             REDIS_URL: redis://hydrant-redis:6379/
+            CI: "true"
         command: npm start
         ports:
             - 8080:8080
