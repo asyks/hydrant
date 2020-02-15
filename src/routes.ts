@@ -20,7 +20,13 @@ function send_ok_text_response(res: express.Response, msg: string): void {
   res.end(msg);
 }
 
-function send_ok_json_response(res: express.Response, data: object): void {
+function send_200_json_response(res: express.Response, data: object): void {
+  res.statusCode = 200;
+  res.json(data);
+}
+
+function send_400_json_response(res: express.Response, data: object): void {
+  res.statusCode = 400;
   res.json(data);
 }
 
@@ -35,9 +41,10 @@ export function cache_set(req: express.Request, res: express.Response): void {
   rclient.set(key, val, function (err, ret) {
     if (err) {
       console.warn(`ERROR during 'set': ${err}`);
+      send_400_json_response(res, {status: "ERROR", payload: req.body})
     } else {
       console.info(`set -> ${key}: ${val} | ${ret}`);
-      send_ok_json_response(res, {status: "OK", stored: {key: key, value: val}})
+      send_200_json_response(res, {status: "OK", stored: {key: key, value: val}})
     }
   })
 }
@@ -48,9 +55,10 @@ export function cache_get(req: express.Request, res: express.Response): void {
   rclient.get(key, function (err, ret) {
     if (err) {
       console.warn(`ERROR during 'get': ${err}`);
+      send_400_json_response(res, {status: "ERROR", key: key})
     } else {
       console.info(`get <- ${key}: ${ret}`);
-      send_ok_json_response(res, {status: "OK", found: {key: key, value: ret}})
+      send_200_json_response(res, {status: "OK", found: {key: key, value: ret}})
     }
   })
 }
