@@ -1,9 +1,7 @@
 import * as assert from "assert"
-import * as express from "express"
 import * as simple from "simple-mock"
 
 import * as routes from "../src/routes"
-import * as constants from "../src/constants"
 
 
 function noop () {}

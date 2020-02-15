@@ -24,6 +24,7 @@
   },
   "devDependencies": {
     "@types/mocha": "5.2.7",
+    "@types/simple-mock": "0.8.1",
     "mocha": "7.0.0",
     "ts-mocha": "6.0.0",
     "simple-mock": "0.8.0"
