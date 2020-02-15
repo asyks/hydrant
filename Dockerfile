@@ -1,4 +1,6 @@
-FROM node:13.6.0-alpine as builder
+ARG BASE_IMAGE=node:13.6.0-alpine
+
+FROM ${BASE_IMAGE} as builder
 
 RUN apk add --no-cache ca-certificates
 
@@ -8,9 +10,9 @@ WORKDIR /opt/hydrant
 COPY package.json package.json
 COPY package-lock.json package-lock.json
 
-RUN npm install --no-optional --save
+RUN npm install --loglevel=error --no-optional --save
 
-FROM node:11.14.0-alpine
+FROM ${BASE_IMAGE}
 
 RUN mkdir -p /opt/hydrant
 WORKDIR /opt/hydrant

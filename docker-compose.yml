@@ -1,6 +1,6 @@
 version: "2"
 services:
-    hydrant-node:
+    app:
         build: .
         environment:
             PORT: 8080
@@ -10,8 +10,8 @@ services:
         ports:
             - 8080:8080
         depends_on:
-            - hydrant-redis
-    hydrant-redis:
+            - store
+    store:
         image: redis:5.0.7-alpine
         ports:
             - 6379:6379

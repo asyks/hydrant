@@ -1,7 +1,7 @@
 {
   "name": "hydrant",
   "version": "0.0.1",
-  "description": "A typescript firebase app",
+  "description": "A typescript app for storing values in redis",
   "author": "Aaron Sykes <aaron@aaronsykes.com>",
   "license": "MIT",
   "main": "server.ts",
