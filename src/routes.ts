@@ -11,40 +11,30 @@ rclient.on("connect", function (): void {
 })
 
 rclient.on("error", function (err): void {
-  console.warn(`ERROR ${err}`);
+  console.error(`ERROR ${err}`);
 })
 
-function send_ok_text_response(res: express.Response, msg: string): void {
-  res.statusCode = 200;
-  res.setHeader("Content-Type", "text/plain");
-  res.end(msg);
-}
-
-function send_200_json_response(res: express.Response, data: object): void {
-  res.statusCode = 200;
-  res.json(data);
-}
-
-function send_400_json_response(res: express.Response, data: object): void {
-  res.statusCode = 400;
+function send_json_response(res: express.Response, code: number, data: object): void {
+  res.statusCode = code;
+  res.setHeader("Content-Type", "application/json");
   res.json(data);
 }
 
 export function index(req: express.Request, res: express.Response): void {
-  send_ok_text_response(res, "Hydrant is running...");
+  send_json_response(res, 200, {status: "OK", message: "Hydrant is running."});
 }
 
 export function cache_set(req: express.Request, res: express.Response): void {
   let key: string = req.body.key;
   let val: string = req.body.value;
 
-  rclient.set(key, val, function (err, ret) {
+  rclient.set(key, val, function (err, reply) {
     if (err) {
-      console.warn(`ERROR during 'set': ${err}`);
-      send_400_json_response(res, {status: "ERROR", payload: req.body})
+      console.error(`ERROR during 'set': ${err}`);
+      send_json_response(res, 400, {status: "ERROR", payload: req.body})
     } else {
-      console.info(`set -> ${key}: ${val} | ${ret}`);
-      send_200_json_response(res, {status: "OK", stored: {key: key, value: val}})
+      console.info(`set -> ${key}: ${val} | ${reply}`);
+      send_json_response(res, 200, {status: "OK", stored: {key: key, value: val}})
     }
   })
 }
@@ -52,13 +42,17 @@ export function cache_set(req: express.Request, res: express.Response): void {
 export function cache_get(req: express.Request, res: express.Response): void {
   let key: string = req.params.key;
 
-  rclient.get(key, function (err, ret) {
+  rclient.get(key, function (err, reply) {
     if (err) {
-      console.warn(`ERROR during 'get': ${err}`);
-      send_400_json_response(res, {status: "ERROR", key: key})
+      console.error(`ERROR during 'get': ${err}`);
+      send_json_response(res, 400, {status: "ERROR", key: key})
     } else {
-      console.info(`get <- ${key}: ${ret}`);
-      send_200_json_response(res, {status: "OK", found: {key: key, value: ret}})
+      console.info(`get <- ${key}: ${reply}`);
+      if (reply === null) {
+        send_json_response(res, 404, {status: "NOTFOUND", key: key});
+      } else {
+        send_json_response(res, 200, {status: "OK", found: {key: key, value: reply}});
+      }
     }
   })
 }
