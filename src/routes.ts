@@ -25,13 +25,22 @@ export function index(req: express.Request, res: express.Response): void {
 }
 
 export function cache_set(req: express.Request, res: express.Response): void {
-  let key: string = req.body.key;
+  let key: string = req.params.key;
   let val: string = req.body.value;
+
+  if (!val) {
+    send_json_response(
+      res, 400, {status: "ERROR", message: "malformed request", payload: req.body}
+    )
+    return
+  }
 
   rclient.set(key, val, function (err, reply) {
     if (err) {
       console.error(`ERROR during 'set': ${err}`);
-      send_json_response(res, 400, {status: "ERROR", payload: req.body})
+      send_json_response(
+        res, 400, {status: "ERROR", message: "cache failure", payload: req.body}
+      )
     } else {
       console.info(`set -> ${key}: ${val} | ${reply}`);
       send_json_response(res, 200, {status: "OK", stored: {key: key, value: val}})
@@ -45,11 +54,13 @@ export function cache_get(req: express.Request, res: express.Response): void {
   rclient.get(key, function (err, reply) {
     if (err) {
       console.error(`ERROR during 'get': ${err}`);
-      send_json_response(res, 400, {status: "ERROR", key: key})
+      send_json_response(
+        res, 400, {status: "ERROR", message: "cache failure", key: key}
+      )
     } else {
       console.info(`get <- ${key}: ${reply}`);
       if (reply === null) {
-        send_json_response(res, 404, {status: "NOTFOUND", key: key});
+        send_json_response(res, 404, {status: "ERROR", message: "notfound", key: key});
       } else {
         send_json_response(res, 200, {status: "OK", found: {key: key, value: reply}});
       }

@@ -25,31 +25,51 @@ describe("routes", function() {
 
       assert.equal(this.mockResponse.json.callCount, 1);
       assert.equal(this.mockResponse.setHeader.lastCall.args[1], "application/json");
-      assert.deepEqual(this.mockResponse.json.lastCall.arg, {status: "OK", message: "Hydrant is running."});
+      assert.deepEqual(
+        this.mockResponse.json.lastCall.arg,
+        {status: "OK", message: "Hydrant is running."}
+      );
     })
   })
   describe("cache_set", function() {
     beforeEach("setup cache_set tests", function() {
-      this.mockRequest = {body: {key: "foo", value: "bar"}};
       this.mockResponse = {};
       simple.mock(this.mockResponse, "setHeader");
       simple.mock(this.mockResponse, "json");
     })
     it("PUT - should send 200 response on success", function() {
+      this.mockRequest = {params: {key: "foo"}, body: {value: "bar"}};
       simple.mock(routes.rclient, "set").callbackWith(null, "OK");
       routes.cache_set(this.mockRequest, this.mockResponse);
 
       assert.equal(this.mockResponse.statusCode, 200);
       assert.equal(this.mockResponse.json.callCount, 1);
-      assert.deepEqual(this.mockResponse.json.lastCall.arg, {status: 'OK', stored: {key: 'foo', value: 'bar'}});
+      assert.deepEqual(
+        this.mockResponse.json.lastCall.arg,
+        {status: 'OK', stored: {key: 'foo', value: 'bar'}}
+      );
     })
     it("PUT - should send 400 response on cache error", function() {
+      this.mockRequest = {params: {key: "foo"}, body: {value: "bar"}};
       simple.mock(routes.rclient, "set").callbackWith(Error("cache set error"), null);
       routes.cache_set(this.mockRequest, this.mockResponse);
 
       assert.equal(this.mockResponse.statusCode, 400);
       assert.equal(this.mockResponse.json.callCount, 1);
-      assert.deepEqual(this.mockResponse.json.lastCall.arg, {status: 'ERROR', payload: this.mockRequest.body});
+      assert.deepEqual(
+        this.mockResponse.json.lastCall.arg,
+        {status: 'ERROR', message: "cache failure", payload: this.mockRequest.body}
+      );
+    })
+    it("PUT - should send 400 response on malformed", function() {
+      this.mockRequest = {params: {key: "foo"}, body: {}};
+      routes.cache_set(this.mockRequest, this.mockResponse);
+
+      assert.equal(this.mockResponse.json.callCount, 1);
+      assert.deepEqual(
+        this.mockResponse.json.lastCall.arg,
+        {status: 'ERROR', message: "malformed request", payload: this.mockRequest.body}
+      );
     })
   })
   describe("cache_get", function() {
@@ -65,7 +85,10 @@ describe("routes", function() {
 
       assert.equal(this.mockResponse.statusCode, 200);
       assert.equal(this.mockResponse.json.callCount, 1);
-      assert.deepEqual(this.mockResponse.json.lastCall.arg, {status: 'OK', found: {key: 'foo', value: 'bar'}});
+      assert.deepEqual(
+        this.mockResponse.json.lastCall.arg,
+        {status: 'OK', found: {key: 'foo', value: 'bar'}}
+      );
     })
     it("GET - should send 400 response on cache error", function() {
       simple.mock(routes.rclient, "get").callbackWith(Error("cache get error"), null);
@@ -73,7 +96,10 @@ describe("routes", function() {
 
       assert.equal(this.mockResponse.statusCode, 400);
       assert.equal(this.mockResponse.json.callCount, 1);
-      assert.deepEqual(this.mockResponse.json.lastCall.arg, {status: 'ERROR', key: this.mockRequest.params.key});
+      assert.deepEqual(
+        this.mockResponse.json.lastCall.arg,
+        {status: 'ERROR', message: "cache failure", key: this.mockRequest.params.key}
+      );
     })
     it("GET - should send 404 response on unset key", function() {
       simple.mock(routes.rclient, "get").callbackWith(null, null);
@@ -81,7 +107,10 @@ describe("routes", function() {
 
       assert.equal(this.mockResponse.statusCode, 404);
       assert.equal(this.mockResponse.json.callCount, 1);
-      assert.deepEqual(this.mockResponse.json.lastCall.arg, {status: 'NOTFOUND', key: this.mockRequest.params.key});
+      assert.deepEqual(
+        this.mockResponse.json.lastCall.arg,
+        {status: 'ERROR', message: "notfound", key: this.mockRequest.params.key}
+      );
     })
   })
 })

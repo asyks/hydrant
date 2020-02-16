@@ -11,7 +11,7 @@ app.use(express.json());
 
 app.get("/", routes.index)
 
-app.put("/set", routes.cache_set)
+app.put("/set/:key", routes.cache_set)
 
 app.get("/get/:key", routes.cache_get)
 
