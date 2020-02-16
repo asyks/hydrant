@@ -1,21 +1,35 @@
 # hydrant
 
-A bare-bones redis http frontend app in typescript node/express
+A bare-bones redis http frontend app in typescript
 
-## Running
+## Developing
 
+The easiest way to setup hydrant for local testing is using docker and
+docker-compose. Simply build and run the project using docker-compose in 
+the usual way.
+
+### Building for local testing
+
+Building hydrant_app and hydrant_store with docker-compose
 ```
-> docker build -t hydrant .
-...
-> docker run --network="host" hydrant start
-...
-```
-Example with custom port:
-```
-> docker run --network="host" hydrant start port=3001
+docker-compose build
 ```
 
-## Testing
+### Running the dev server
+
+Running the dev server With docker-compose:
 ```
-> docker run hydrant test
+docker-compose up --build
+```
+
+### Automated Tests
+
+Running tests with docker-compose:
+```
+> docker-compose run app npm test
+```
+
+Running tests with just docker:
+```
+> docker run hydrant_app npm test
 ```
