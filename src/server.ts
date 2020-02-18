@@ -7,6 +7,18 @@ import * as constants from "./constants";
 
 const app = express();
 
+const rclient: redis.RedisClient = redis.createClient({url: constants.redis_url});
+
+rclient.on("connect", function (): void {
+  console.info("Connected to Redis");
+})
+
+rclient.on("error", function (err): void {
+  console.error(`ERROR ${err}`);
+})
+
+app.locals.rclient = rclient
+
 app.use(express.json());
 
 app.get("/", routes.index)

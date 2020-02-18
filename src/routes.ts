@@ -1,18 +1,6 @@
 import * as express from "express";
 import * as redis from "redis";
 
-import * as constants from "./constants"
-
-
-export const rclient: redis.RedisClient = redis.createClient({url: constants.redis_url});
-
-rclient.on("connect", function (): void {
-  console.info("Connected to Redis");
-})
-
-rclient.on("error", function (err): void {
-  console.error(`ERROR ${err}`);
-})
 
 function send_json_response(res: express.Response, code: number, data: object): void {
   res.statusCode = code;
@@ -35,6 +23,7 @@ export function cache_set(req: express.Request, res: express.Response): void {
     return
   }
 
+  let rclient = req.app.locals.rclient;
   rclient.set(key, val, function (err, reply) {
     if (err) {
       console.error(`ERROR during 'set': ${err}`);
@@ -51,6 +40,7 @@ export function cache_set(req: express.Request, res: express.Response): void {
 export function cache_get(req: express.Request, res: express.Response): void {
   let key: string = req.params.key;
 
+  let rclient = req.app.locals.rclient;
   rclient.get(key, function (err, reply) {
     if (err) {
       console.error(`ERROR during 'get': ${err}`);

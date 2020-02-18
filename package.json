@@ -7,7 +7,7 @@
   "main": "server.ts",
   "scripts": {
     "start": "npx ts-node src/server.ts",
-    "test": "npx ts-mocha --exit test/test.ts"
+    "test": "npx ts-mocha --exit test/*"
   },
   "repository": {
     "type": "git",
