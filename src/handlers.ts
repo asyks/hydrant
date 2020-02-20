@@ -1,5 +1,4 @@
 import * as express from "express";
-import * as redis from "redis";
 
 
 function send_json_response(res: express.Response, code: number, data: object): void {
