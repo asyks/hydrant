@@ -23,9 +23,9 @@ app.use(express.json());
 
 app.get("/", handlers.index)
 
-app.put("/set/:key", handlers.cache_set)
+app.put("/set/:key", handlers.cacheSet)
 
-app.get("/get/:key", handlers.cache_get)
+app.get("/get/:key", handlers.cacheGet)
 
 app.listen(constants.port, () => {
   console.log(`Server running at http://${constants.hostname}:${constants.port}/`);

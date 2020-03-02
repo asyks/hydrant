@@ -1,23 +1,42 @@
 import * as express from "express";
 
+import * as constants from "./constants";
+import * as types from "./types";
 
-function send_json_response(res: express.Response, code: number, data: object): void {
+
+function sendJsonResponse(
+  res: express.Response, code: number, body: types.SetRespBody | types.GetRespBody
+): void {
   res.statusCode = code;
   res.setHeader("Content-Type", "application/json");
-  res.json(data);
+  res.json(body);
 }
 
-export function index(req: express.Request, res: express.Response): void {
-  send_json_response(res, 200, {status: "OK", message: "Hydrant is running."});
+export function index(
+  req: express.Request, res: express.Response
+): void {
+  sendJsonResponse(
+    res,
+    200,
+    {status: constants.RespStatus.ok, message: "Hydrant is running."}
+  );
 }
 
-export function cache_set(req: express.Request, res: express.Response): void {
+export function cacheSet(
+  req: express.Request, res: express.Response
+): void {
   let key: string = req.params.key;
   let val: string = req.body.value;
 
   if (!val) {
-    send_json_response(
-      res, 400, {status: "ERROR", message: "malformed request", payload: req.body}
+    sendJsonResponse(
+      res,
+      400,
+      {
+        status: constants.RespStatus.error,
+        message: "malformed request",
+        payload: req.body
+      }
     )
     return
   }
@@ -26,33 +45,69 @@ export function cache_set(req: express.Request, res: express.Response): void {
   rclient.set(key, val, function (err, reply) {
     if (err) {
       console.error(`ERROR during 'set': ${err}`);
-      send_json_response(
-        res, 400, {status: "ERROR", message: "cache failure", payload: req.body}
-      )
+      sendJsonResponse(
+        res,
+        400,
+        {
+          status: constants.RespStatus.error,
+          message: "cache failure",
+          payload: req.body
+        }
+      );
     } else {
       console.info(`set -> ${key}: ${val} | ${reply}`);
-      send_json_response(res, 200, {status: "OK", stored: {key: key, value: val}})
+      sendJsonResponse(
+        res,
+        200,
+        {
+          status: constants.RespStatus.ok,
+          stored: {key: key, value: val}
+        }
+      );
     }
-  })
+  });
 }
 
-export function cache_get(req: express.Request, res: express.Response): void {
+export function cacheGet(
+  req: express.Request, res: express.Response
+): void {
   let key: string = req.params.key;
 
   let rclient = req.app.locals.rclient;
   rclient.get(key, function (err, reply) {
     if (err) {
       console.error(`ERROR during 'get': ${err}`);
-      send_json_response(
-        res, 400, {status: "ERROR", message: "cache failure", key: key}
-      )
+      sendJsonResponse(
+        res,
+        400,
+        {
+          status: constants.RespStatus.error,
+          message: "cache failure",
+          key: key
+        }
+      );
     } else {
       console.info(`get <- ${key}: ${reply}`);
       if (reply === null) {
-        send_json_response(res, 404, {status: "ERROR", message: "notfound", key: key});
+        sendJsonResponse(
+          res,
+          404,
+          {
+            status: constants.RespStatus.error,
+            message: "notfound",
+            key: key
+          }
+        );
       } else {
-        send_json_response(res, 200, {status: "OK", found: {key: key, value: reply}});
+        sendJsonResponse(
+          res,
+          200,
+          {
+            status: constants.RespStatus.ok,
+            found: {key: key, value: reply}
+          }
+        );
       }
     }
-  })
+  });
 }

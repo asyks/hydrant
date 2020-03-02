@@ -43,14 +43,14 @@ describe("handlers", function() {
       );
     })
   })
-  describe("cache_set", function() {
-    beforeEach("setup cache_set tests", function() {
+  describe("cacheSet", function() {
+    beforeEach("setup cacheSet tests", function() {
       mockRequest.params = {key: "foo"};
       mockRequest.body = {value: "bar"};
     })
     it("PUT - should send 200 response on success", function() {
       simple.mock(rclient, "set").callbackWith(null, "OK");
-      handlers.cache_set(mockRequest, mockResponse);
+      handlers.cacheSet(mockRequest, mockResponse);
 
       assert.equal(mockResponse.statusCode, 200);
       assert.equal(mockResponse.json.callCount, 1);
@@ -61,7 +61,7 @@ describe("handlers", function() {
     })
     it("PUT - should send 400 response on cache error", function() {
       simple.mock(rclient, "set").callbackWith(Error("cache set error"), null);
-      handlers.cache_set(mockRequest, mockResponse);
+      handlers.cacheSet(mockRequest, mockResponse);
 
       assert.equal(mockResponse.statusCode, 400);
       assert.equal(mockResponse.json.callCount, 1);
@@ -72,7 +72,7 @@ describe("handlers", function() {
     })
     it("PUT - should send 400 response on malformed", function() {
       mockRequest.body = {};
-      handlers.cache_set(mockRequest, mockResponse);
+      handlers.cacheSet(mockRequest, mockResponse);
 
       assert.equal(mockResponse.json.callCount, 1);
       assert.deepEqual(
@@ -81,13 +81,13 @@ describe("handlers", function() {
       );
     })
   })
-  describe("cache_get", function() {
-    beforeEach("setup cache_get tests", function() {
+  describe("cacheGet", function() {
+    beforeEach("setup cacheGet tests", function() {
       mockRequest.params = {key: "foo"};
     })
     it("GET - should send 200 response on success", function() {
       simple.mock(rclient, "get").callbackWith(null, "bar");
-      handlers.cache_get(mockRequest, mockResponse);
+      handlers.cacheGet(mockRequest, mockResponse);
 
       assert.equal(mockResponse.statusCode, 200);
       assert.equal(mockResponse.json.callCount, 1);
@@ -98,7 +98,7 @@ describe("handlers", function() {
     })
     it("GET - should send 400 response on cache error", function() {
       simple.mock(rclient, "get").callbackWith(Error("cache get error"), null);
-      handlers.cache_get(mockRequest, mockResponse);
+      handlers.cacheGet(mockRequest, mockResponse);
 
       assert.equal(mockResponse.statusCode, 400);
       assert.equal(mockResponse.json.callCount, 1);
@@ -109,7 +109,7 @@ describe("handlers", function() {
     })
     it("GET - should send 404 response on unset key", function() {
       simple.mock(rclient, "get").callbackWith(null, null);
-      handlers.cache_get(mockRequest, mockResponse);
+      handlers.cacheGet(mockRequest, mockResponse);
 
       assert.equal(mockResponse.statusCode, 404);
       assert.equal(mockResponse.json.callCount, 1);
