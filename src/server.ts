@@ -7,7 +7,7 @@ import * as constants from "./constants";
 
 const app = express();
 
-const rclient: redis.RedisClient = redis.createClient({url: constants.redis_url});
+const rclient: redis.RedisClient = redis.createClient({ url: constants.redisUrl });
 
 rclient.on("connect", function (): void {
   console.info("Connected to Redis");
@@ -28,5 +28,5 @@ app.put("/set/:key", handlers.cacheSet)
 app.get("/get/:key", handlers.cacheGet)
 
 app.listen(constants.port, () => {
-  console.log(`Server running at http://${constants.hostname}:${constants.port}/`);
+  console.log(`Server running at http://127.0.0.1:${constants.port}/`);
 })

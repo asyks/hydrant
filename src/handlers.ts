@@ -18,15 +18,15 @@ export function index(
   sendJsonResponse(
     res,
     200,
-    {status: constants.RespStatus.ok, message: "Hydrant is running."}
+    { status: constants.RespStatus.ok, message: "Hydrant is running." }
   );
 }
 
 export function cacheSet(
   req: express.Request, res: express.Response
 ): void {
-  let key: string = req.params.key;
-  let val: string = req.body.value;
+  const key: string = req.params.key;
+  const val: string = req.body.value;
 
   if (!val) {
     sendJsonResponse(
@@ -41,7 +41,7 @@ export function cacheSet(
     return
   }
 
-  let rclient = req.app.locals.rclient;
+  const rclient = req.app.locals.rclient;
   rclient.set(key, val, function (err, reply) {
     if (err) {
       console.error(`ERROR during 'set': ${err}`);
@@ -61,7 +61,7 @@ export function cacheSet(
         200,
         {
           status: constants.RespStatus.ok,
-          stored: {key: key, value: val}
+          stored: { key: key, value: val }
         }
       );
     }
@@ -71,9 +71,9 @@ export function cacheSet(
 export function cacheGet(
   req: express.Request, res: express.Response
 ): void {
-  let key: string = req.params.key;
+  const key: string = req.params.key;
 
-  let rclient = req.app.locals.rclient;
+  const rclient = req.app.locals.rclient;
   rclient.get(key, function (err, reply) {
     if (err) {
       console.error(`ERROR during 'get': ${err}`);
@@ -104,7 +104,7 @@ export function cacheGet(
           200,
           {
             status: constants.RespStatus.ok,
-            found: {key: key, value: reply}
+            found: { key: key, value: reply }
           }
         );
       }
