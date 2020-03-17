@@ -6,8 +6,8 @@
   "license": "MIT",
   "main": "server.ts",
   "scripts": {
-    "start": "npx ts-node src/server.ts",
-    "test": "npx ts-mocha --exit test/*",
+    "start": "ts-node src/server.ts",
+    "test": "ts-mocha --exit test/*",
     "lint": "eslint . --ext .ts"
   },
   "repository": {
